@@ -1,31 +1,202 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link href="{{ asset('css/app.css') }}" rel="stylesheet" />
-    </head>
-    <body>
-        <button id="myBtn" class="btn">View Cars</button>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bootstrap User Management Data Table</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<link href="{{ asset('css/app.css') }}" rel="stylesheet" />
 
-        <!-- The Modal -->
-        <div id="myModal" class="modal">
-
-            <!-- Modal content -->
-            <div class="modal-content">
-                <span class="close">&times;</span>
-                <form action="authorize" method="post">
-                    <select name="provider" class="form-control" id="carSelect">
-                        {% for car in cars %}
-                        <option value="{{car.id}}" >{{car.attributes.name}}</option>
-                        {% endfor %}
-                    </select><br /> <br />
-                    <button type="submit">Connect</button>
-                </form>
+<script type="text/javascript">
+$(document).ready(function(){
+	$('[data-toggle="tooltip"]').tooltip();
+});
+</script>
+</head>
+<body>
+    <div class="container">
+        <div class="table-wrapper">
+            <div class="table-title">
+                <div class="row">
+                    <div class="col-sm-5">
+						<h2>Car <b>Management</b></h2>
+					</div>
+					<div class="col-sm-7">
+						<a href="#" class="btn btn-primary" data-toggle="modal" data-target="#addNewCar"><i class="material-icons">&#xE147;</i> <span>Add New Car</span></a>
+						<!--<a href="#" class="btn btn-primary"><i class="material-icons">&#xE24D;</i> <span>Export to Excel</span></a>-->				
+					</div>
+                </div>
             </div>
-
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th># ID</th>
+                        <th>Brand</th>						
+						<th>Model</th>
+						<th>Color</th>
+                        <th>Price</th>
+						<th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for car in cars %}
+                    <tr>
+                        <td>{{ car.id }}</td>
+                        <td><a href="#">{{ car.brand }}</a></td>
+                        <td>{{ car.model }}</td>                        
+                        <td>{{ car.color }}</td>
+						<td>{{ car.price }}</td>
+						<td>
+							<a href="#" class="settings editCarBtn" title="Edit" data-car={{car.id}} data-toggle="tooltip"><i class="material-icons">&#xE8B8;</i></a>
+							<a href="#" class="delete deleteCarBtn" title="Delete" data-car={{car.id}} data-toggle="tooltip"><i class="material-icons">&#xE5C9;</i></a>
+						</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
-    </body>
-    <!-- We load our tiny JS script when all the elements are loaded -->
-    <script src="{{ asset('js/app.js') }}"></script>
+        
+        <!-- Add new car modal -->
+        <div class="modal" id="addNewCar">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">ADD NEW CAR</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <form id="add-car-form" class="form-horizontal">
+                            <fieldset>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label" for="brand">Brand</label>  
+                                    <div class="col-md-4">
+                                        <input id="brand" name="brand" placeholder="Mercedes" class="form-control input-md" required="" type="text">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label" for="model">Model</label>  
+                                    <div class="col-md-4">
+                                        <input id="model" name="model" placeholder="AMG" class="form-control input-md" required="" type="text">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label" for="color">Color</label>  
+                                    <div class="col-md-4">
+                                        <input id="color" name="color" placeholder="Black" class="form-control input-md" required="" type="text">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label" for="price">Price</label>  
+                                    <div class="col-md-4">
+                                        <input id="price" name="price" placeholder="80 000 USD" class="form-control input-md" required="" type="text">
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </form>
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success" id="addCar">Add</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!-- End of Add new Car Modal-->
+
+        <!-- Edit Car Modal -->
+        <div class="modal" id="editCarModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">EDIT CAR</h4>
+                        <button type="button" class="close edit-modal-closer" data-dismiss="modal">&times;</button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <form id="edit-car-form" class="form-horizontal">
+                            <fieldset>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label" for="editBrand">Brand</label>  
+                                    <div class="col-md-4">
+                                        <input id="editBrand" name="brand" placeholder="Mercedes" class="form-control input-md" required="" type="text">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label" for="editModel">Model</label>  
+                                    <div class="col-md-4">
+                                        <input id="editModel" name="model" placeholder="AMG" class="form-control input-md" required="" type="text">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label" for="editColor">Color</label>  
+                                    <div class="col-md-4">
+                                        <input id="editColor" name="color" placeholder="Black" class="form-control input-md" required="" type="text">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label" for="editPrice">Price</label>  
+                                    <div class="col-md-4">
+                                        <input id="editPrice" name="price" placeholder="80 000 USD" class="form-control input-md" required="" type="text">
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </form>
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success" data-car="" id="editCar">Edit</button>
+                        <button type="button" class="btn btn-danger edit-modal-closer" data-dismiss="editCarModal">Close</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!-- End of edit car modal -->
+
+        <!-- Delete Confirmation Modal -->
+        <div id="deleteConfirmationModal" class="modal">
+            <div class="modal-dialog modal-confirm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <div class="icon-box">
+                            <i class="material-icons">&#xE5CD;</i>
+                        </div>				
+                        <h4 class="modal-title">Are you sure?</h4>	
+                        <button id="delete-modal-closer" type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Do you really want to delete this car record?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-info delete-modal-closer" data-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-danger" data-car="" id="confirmDelete">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End of delete confirmation modal -->
+    </div>
+</body>
+<script
+  src="https://code.jquery.com/jquery-3.4.1.min.js"
+  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+  crossorigin="anonymous"></script>
+<script src="{{ asset('js/app.js') }}"></script>
 </html>

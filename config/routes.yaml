@@ -1,3 +1,17 @@
 index:
     path: /
     controller: App\Controller\CarController::home
+add:
+    path: /add
+    controller: App\Controller\CarController::add
+    methods: POST
+show:
+    path: /car
+    controller: App\Controller\CarController::show
+edit:
+    path: /edit
+    controller: App\Controller\CarController::edit
+    methods: POST
+delete:
+    path: /delete
+    controller: App\Controller\CarController::delete
