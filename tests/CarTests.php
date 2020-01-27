@@ -31,15 +31,4 @@ class CarTests extends WebTestCase
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
     }
 
-    public function testEditCar()
-    {
-        $client = static::createClient();
-
-        $car = $this->manager->getRepository(Cars::class)->findOne(['brand' => 'tester']);
-
-        $client->request('POST', '/edit');
-
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
-    }
-
 }
