@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}Welcome!{% endblock %}</title>
+        <link href="{{ asset('css/app.css') }}" rel="stylesheet" />
+    </head>
+    <body>
+        <button id="myBtn" class="btn">View Cars</button>
+
+        <!-- The Modal -->
+        <div id="myModal" class="modal">
+
+            <!-- Modal content -->
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <form action="authorize" method="post">
+                    <select name="provider" class="form-control" id="carSelect">
+                        {% for car in cars %}
+                        <option value="{{car.id}}" >{{car.attributes.name}}</option>
+                        {% endfor %}
+                    </select><br /> <br />
+                    <button type="submit">Connect</button>
+                </form>
+            </div>
+
+        </div>
+    </body>
+    <!-- We load our tiny JS script when all the elements are loaded -->
+    <script src="{{ asset('js/app.js') }}"></script>
+</html>
